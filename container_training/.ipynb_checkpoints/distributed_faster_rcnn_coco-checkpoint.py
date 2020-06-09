@@ -298,7 +298,8 @@ def main():
         for i, batch in enumerate(train_data):
             if epoch == 0 and i <= lr_warmup: # does a learning rate reset if warming up 
                 # adjust based on real percentage
-                new_lr = base_lr * get_lr_at_iter(i / lr_warmup, args.lr_warmup_factor)
+                if(lr_warmup!=0):
+                    new_lr = base_lr * get_lr_at_iter(i / lr_warmup, args.lr_warmup_factor)
                 if new_lr != trainer.learning_rate:
                     if i % args.log_interval == 0:
                         logger.info(
@@ -383,17 +384,17 @@ if __name__ == "__main__":
                              'More threads may incur higher GPU memory footprint, '
                              'but may speed up throughput. Note that when horovod is used, '
                              'it is set to 1.')
-    parser.add_argument('--horovod', action='store_true',default=True,
+    parser.add_argument('--horovod',default=True,
                         help='Use MXNet Horovod for distributed training. Must be run with OpenMPI. '
                              '--gpus is ignored when using --horovod.')
-    parser.add_argument('--amp', action='store_true',
+    parser.add_argument('--amp', default=False,
                         help='Use MXNet AMP for mixed precision training.')
-    parser.add_argument('--static-alloc', action='store_true',
+    parser.add_argument('--static-alloc', default=False,
                         help='Whether to use static memory allocation. Memory usage will increase.')
-    parser.add_argument('--mixup', action='store_true', help='Use mixup training.')
+    parser.add_argument('--mixup', default=False, help='Use mixup training.')
     parser.add_argument('--no-mixup-epochs', type=int, default=20,
                         help='Disable mixup training if enabled in the last N epochs.')
-    parser.add_argument('--no-cuda', action='store_true', help='disable training on GPU (default: False)')
+    parser.add_argument('--no-cuda', default=False, help='disable training on GPU (default: False)')
     parser.add_argument('--rpn-smoothl1-rho', type=float, default=1. / 9.,
                         help='RPN box regression transition point from L1 to L2 loss.'
                              'Set to 0.0 to make the loss simply L1.')
@@ -401,7 +402,7 @@ if __name__ == "__main__":
                         help='RCNN box regression transition point from L1 to L2 loss.'
                              'Set to 0.0 to make the loss simply L1.')
     parser.add_argument('--model-name', type=str, default='faster_rcnn_resnet101_v1d_coco')
-    parser.add_argument('--s3bucket', type=str, default='privisaa-bucket-virginia') # CHANGE THIS
+    parser.add_argument('--s3bucket', type=str, default='') 
     args = parser.parse_args()
 
     if not args.no_cuda:
