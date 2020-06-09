@@ -403,6 +403,10 @@ if __name__ == "__main__":
                              'Set to 0.0 to make the loss simply L1.')
     parser.add_argument('--model-name', type=str, default='faster_rcnn_resnet101_v1d_coco')
     parser.add_argument('--s3bucket', type=str, default='') 
+    parser.add_argument('--log-interval', type=int, default=100,
+                        help='Logging mini-batch interval. Default is 100.')
+    parser.add_argument('--save-prefix', type=str, default='',
+                        help='Saving parameter prefix')
     args = parser.parse_args()
 
     if not args.no_cuda:
